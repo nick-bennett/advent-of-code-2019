@@ -11,8 +11,10 @@ import java.util.stream.Stream;
 public class JavaMain {
 
   private static final String INPUT_FILE = "day2/input.txt";
-  private static final String PART1_FORMAT = "Part 1: noun %d; verb = %d; code[0] = %d.%n";
-  private static final String PART2_FORMAT = "Part 2: target code[0] = %d; 100 * noun + verb = %d.%n";
+  private static final String PART1_FORMAT =
+      "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n";
+  private static final String PART2_FORMAT =
+      "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n";
   private static final Pattern delimiter = Pattern.compile("\\s*,\\s*");
 
   public static void main(String[] args) throws URISyntaxException, IOException {
