@@ -24,9 +24,7 @@ object KotlinMain {
         }
     }
 
-    private fun fuelNeeded(mass: Int): Int {
-        return Math.max(0, mass / 3 - 2)
-    }
+    private fun fuelNeeded(mass: Int) = Math.max(0, mass / 3 - 2)
 
     private fun totalFuelNeeded(mass: Int): Int {
         return if (mass <= 0) {
