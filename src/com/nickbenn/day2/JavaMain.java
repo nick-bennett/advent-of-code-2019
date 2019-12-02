@@ -14,7 +14,7 @@ public class JavaMain {
   private static final Pattern DELIMITER = Pattern.compile("\\s*,\\s*");
   private static final int NOUN = 12;
   private static final int VERB = 2;
-  private static final int TARGET = 19690720;
+  private static final int TARGET = 19_690_720;
   private static final int UPPER_BOUND = 100;
   private static final String FORMAT_1 = "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n";
   private static final String FORMAT_2 = "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n";

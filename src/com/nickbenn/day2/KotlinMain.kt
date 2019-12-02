@@ -8,7 +8,7 @@ object KotlinMain {
     private const val DELIMITER = "\\s*,\\s*"
     private const val NOUN = 12
     private const val VERB = 2
-    private const val TARGET = 19690720
+    private const val TARGET = 19_690_720
     private const val UPPER_BOUND = 100
     private const val FORMAT_1 = "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n"
     private const val FORMAT_2 = "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n"
