@@ -41,16 +41,16 @@ public class JavaMain {
     work[2] = verb;
     loop:
     for (int position = 0; position < work.length; position += 4) {
-      int operator = work[position];
+      int opcode = work[position];
       int operand1 = work[position + 1];
       int operand2 = work[position + 2];
-      int operand3 = work[position + 3];
-      switch (operator) {
+      int dest = work[position + 3];
+      switch (opcode) {
         case 1:
-          work[operand3] = work[operand1] + work[operand2];
+          work[dest] = work[operand1] + work[operand2];
           break;
         case 2:
-          work[operand3] = work[operand1] * work[operand2];
+          work[dest] = work[operand1] * work[operand2];
           break;
         case 99:
           break loop;

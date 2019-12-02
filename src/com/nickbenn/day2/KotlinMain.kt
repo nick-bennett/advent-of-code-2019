@@ -39,8 +39,8 @@ object KotlinMain {
         work[1] = noun
         work[2] = verb
         loop@ for (position in work.indices step 4) {
-            val (operator, operand1, operand2, dest) = work.subList(position, position + 4)
-            when (operator) {
+            val (opcode, operand1, operand2, dest) = work.subList(position, position + 4)
+            when (opcode) {
                 1 -> work[dest] = work[operand1] + work[operand2]
                 2 -> work[dest] = work[operand1] * work[operand2]
                 99 -> break@loop
