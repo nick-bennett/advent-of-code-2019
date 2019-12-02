@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.nickbenn.day1;
+package day1;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -24,11 +24,11 @@ import java.util.stream.Stream;
 
 public class JavaMain {
 
-  private static final String INPUT_FILE = "day1/input.txt";
+  private static final String INPUT_FILE = "input.txt";
   private static final String OUTPUT_FORMAT = "Part %d: %,d%n";
 
   public static void main(String[] args) throws URISyntaxException, IOException {
-    Path path = Path.of(JavaMain.class.getClassLoader().getResource(INPUT_FILE).toURI());
+    Path path = Path.of(JavaMain.class.getResource(INPUT_FILE).toURI());
     System.out.printf(OUTPUT_FORMAT, 1, compute(path, JavaMain::fuelNeeded));
     System.out.printf(OUTPUT_FORMAT, 2, compute(path, JavaMain::totalFuelNeeded));
   }

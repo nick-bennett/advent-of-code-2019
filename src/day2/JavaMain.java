@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.nickbenn.day2;
+package day2;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -25,20 +25,20 @@ import java.util.stream.Stream;
 
 public class JavaMain {
 
-  private static final String INPUT_FILE = "day2/input.txt";
+  private static final String INPUT_FILE = "input.txt";
   private static final Pattern DELIMITER = Pattern.compile("\\s*,\\s*");
   private static final int NOUN = 12;
   private static final int VERB = 2;
   private static final int TARGET = 19_690_720;
   private static final int UPPER_BOUND = 100;
   private static final String FORMAT_1 = "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n";
-  private static final String FORMAT_2 = "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n";
+  private static final String FORMAT_2 = "Part 2: target code[0] = %,d; %d * noun + verb = %,d.%n";
 
   public static void main(String[] args) throws URISyntaxException, IOException {
-    Path path = Path.of(JavaMain.class.getClassLoader().getResource(INPUT_FILE).toURI());
+    Path path = Path.of(JavaMain.class.getResource(INPUT_FILE).toURI());
     int[] code = parse(path);
     System.out.printf(FORMAT_1, NOUN, VERB, process(code, NOUN, VERB));
-    System.out.printf(FORMAT_2, TARGET, reverse(code, TARGET));
+    System.out.printf(FORMAT_2, TARGET, UPPER_BOUND, reverse(code, TARGET, UPPER_BOUND));
   }
 
   public static int[] parse(Path path) throws IOException {
@@ -76,11 +76,11 @@ public class JavaMain {
     return work[0];
   }
 
-  private static int reverse(int[] code, int target) {
-    for (int noun = 0; noun < UPPER_BOUND; noun++) {
-      for (int verb = 0; verb < UPPER_BOUND; verb++) {
+  private static int reverse(int[] code, int target, int upperBound) {
+    for (int noun = 0; noun < upperBound; noun++) {
+      for (int verb = 0; verb < upperBound; verb++) {
         if (process(code, noun, verb) == target) {
-          return UPPER_BOUND * noun + verb;
+          return upperBound * noun + verb;
         }
       }
     }

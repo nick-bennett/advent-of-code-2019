@@ -13,29 +13,29 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.nickbenn.day2
+package day2
 
 import java.io.File
 
 object KotlinMain {
 
-    private const val INPUT_FILE = "day2/input.txt"
+    private const val INPUT_FILE = "input.txt"
     private const val DELIMITER = "\\s*,\\s*"
     private const val NOUN = 12
     private const val VERB = 2
     private const val TARGET = 19_690_720
     private const val UPPER_BOUND = 100
     private const val FORMAT_1 = "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n"
-    private const val FORMAT_2 = "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n"
+    private const val FORMAT_2 = "Part 2: target code[0] = %,d; %d * noun + verb = %,d.%n"
 
     private val delimiterRegex = Regex(DELIMITER)
 
     @JvmStatic
     fun main(vararg args: String) {
-        javaClass.classLoader.getResource(INPUT_FILE)?.toURI()?.let { uri ->
+        javaClass.getResource(INPUT_FILE)?.toURI()?.let { uri ->
             with (parse(File(uri))) {
                 print(FORMAT_1.format(NOUN, VERB, process(this, NOUN, VERB)))
-                print(FORMAT_2.format(TARGET, reverse(this, TARGET)))
+                print(FORMAT_2.format(TARGET, UPPER_BOUND, reverse(this, TARGET, UPPER_BOUND)))
             }
         }
     }
@@ -65,11 +65,11 @@ object KotlinMain {
         return work[0]
     }
 
-    private fun reverse(code: List<Int>, target: Int): Int {
-        for (noun in 0 until UPPER_BOUND) {
-            for (verb in 0 until UPPER_BOUND) {
+    private fun reverse(code: List<Int>, target: Int, upperBound: Int): Int {
+        for (noun in 0 until upperBound) {
+            for (verb in 0 until upperBound) {
                 if (process(code, noun, verb) == target) {
-                    return UPPER_BOUND * noun + verb
+                    return upperBound * noun + verb
                 }
             }
         }

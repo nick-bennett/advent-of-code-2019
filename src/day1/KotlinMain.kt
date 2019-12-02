@@ -13,18 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.nickbenn.day1
+package day1
 
 import java.io.File
 
 object KotlinMain {
 
-    private const val INPUT_FILE = "day1/input.txt"
+    private const val INPUT_FILE = "input.txt"
     private const val OUTPUT_FORMAT = "Part %d: %,d%n"
 
     @JvmStatic
     fun main(vararg args: String) {
-        javaClass.classLoader.getResource(INPUT_FILE)?.toURI()?.let { uri ->
+        javaClass.getResource(INPUT_FILE)?.toURI()?.let { uri ->
             print(OUTPUT_FORMAT.format(1, compute(File(uri), ::fuelNeeded)))
             print(OUTPUT_FORMAT.format(2, compute(File(uri), ::totalFuelNeeded)))
         }

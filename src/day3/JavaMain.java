@@ -1,4 +1,4 @@
-package com.nickbenn.day3;
+package day3;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -9,11 +9,11 @@ import java.util.stream.Stream;
 
 public class JavaMain {
 
-  private static final String INPUT_FILE = "day2/input.txt";
+  private static final String INPUT_FILE = "input.txt";
   private static final Pattern DELIMITER = Pattern.compile("\\s*,\\s*");
 
   public static void main(String[] args) throws URISyntaxException, IOException {
-    Path path = Path.of(JavaMain.class.getClassLoader().getResource(INPUT_FILE).toURI());
+    Path path = Path.of(JavaMain.class.getResource(INPUT_FILE).toURI());
     int[] code = parse(path);
   }
 
