@@ -9,40 +9,37 @@ object KotlinMain {
     private const val NOUN = 12
     private const val VERB = 2
     private const val TARGET = 19690720
-    private const val PART_1_FORMAT =
-        "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n"
-    private const val PART_2_FORMAT =
-        "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n"
+    private const val UPPER_BOUND = 100
+    private const val FORMAT_1 = "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n"
+    private const val FORMAT_2 = "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n"
+
+    private val delimiterRegex = Regex(DELIMITER)
 
     @JvmStatic
     fun main(vararg args: String) {
         javaClass.classLoader.getResource(INPUT_FILE)?.toURI()?.let { uri ->
-            val code: IntArray = parse(File(uri))
-            print(PART_1_FORMAT.format(NOUN, VERB, process(code, NOUN, VERB)))
-            print(PART_2_FORMAT.format(TARGET, reverse(code, TARGET)))
+            with (parse(File(uri))) {
+                print(FORMAT_1.format(NOUN, VERB, process(this, NOUN, VERB)))
+                print(FORMAT_2.format(TARGET, reverse(this, TARGET)))
+            }
         }
     }
 
-    fun parse(file: File): IntArray {
-        val delimiterRegex = Regex(DELIMITER)
+    fun parse(file: File): List<Int> {
         return file.useLines { sequence ->
             sequence
                 .flatMap { delimiterRegex.split(it).asSequence() }
                 .map { it.toInt() }
                 .toList()
-                .toIntArray()
         }
     }
 
-    private fun process(code: IntArray, noun: Int, verb: Int): Int {
-        val work = code.copyOf()
+    private fun process(code: List<Int>, noun: Int, verb: Int): Int {
+        val work = code.toMutableList()
         work[1] = noun
         work[2] = verb
-        loop@ for (position in 0 until work.size step 4) {
-            val operator = work[position]
-            val operand1 = work[position + 1]
-            val operand2 = work[position + 2]
-            val dest = work[position + 3]
+        loop@ for (position in work.indices step 4) {
+            val (operator, operand1, operand2, dest) = work.subList(position, position + 4)
             when (operator) {
                 1 -> work[dest] = work[operand1] + work[operand2]
                 2 -> work[dest] = work[operand1] * work[operand2]
@@ -53,11 +50,11 @@ object KotlinMain {
         return work[0]
     }
 
-    private fun reverse(code: IntArray, target: Int): Int {
-        for (noun in 0..99) {
-            for (verb in 0..99) {
+    private fun reverse(code: List<Int>, target: Int): Int {
+        for (noun in 0 until UPPER_BOUND) {
+            for (verb in 0 until UPPER_BOUND) {
                 if (process(code, noun, verb) == target) {
-                    return 100 * noun + verb
+                    return UPPER_BOUND * noun + verb
                 }
             }
         }

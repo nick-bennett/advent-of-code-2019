@@ -11,26 +11,25 @@ import java.util.stream.Stream;
 public class JavaMain {
 
   private static final String INPUT_FILE = "day2/input.txt";
-  private static final String PART1_FORMAT =
-      "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n";
-  private static final String PART2_FORMAT =
-      "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n";
-  private static final Pattern delimiter = Pattern.compile("\\s*,\\s*");
+  private static final Pattern DELIMITER = Pattern.compile("\\s*,\\s*");
+  private static final int NOUN = 12;
+  private static final int VERB = 2;
+  private static final int TARGET = 19690720;
+  private static final int UPPER_BOUND = 100;
+  private static final String FORMAT_1 = "Part 1: noun %d; verb = %d; resulting code[0] = %,d.%n";
+  private static final String FORMAT_2 = "Part 2: target code[0] = %,d; 100 * noun + verb = %d.%n";
 
   public static void main(String[] args) throws URISyntaxException, IOException {
     Path path = Path.of(JavaMain.class.getClassLoader().getResource(INPUT_FILE).toURI());
     int[] code = parse(path);
-    int noun = 12;
-    int verb = 2;
-    System.out.printf(PART1_FORMAT, noun, verb, process(code, noun, verb));
-    int target = 19690720;
-    System.out.printf(PART2_FORMAT, target, reverse(code, target));
+    System.out.printf(FORMAT_1, NOUN, VERB, process(code, NOUN, VERB));
+    System.out.printf(FORMAT_2, TARGET, reverse(code, TARGET));
   }
 
   public static int[] parse(Path path) throws IOException {
     try (Stream<String> stream = Files.lines(path)) {
       return stream
-          .flatMap(delimiter::splitAsStream)
+          .flatMap(DELIMITER::splitAsStream)
           .mapToInt(Integer::parseInt)
           .toArray();
     }
@@ -63,10 +62,10 @@ public class JavaMain {
   }
 
   private static int reverse(int[] code, int target) {
-    for (int noun = 0; noun < 100; noun++) {
-      for (int verb = 0; verb < 100; verb++) {
+    for (int noun = 0; noun < UPPER_BOUND; noun++) {
+      for (int verb = 0; verb < UPPER_BOUND; verb++) {
         if (process(code, noun, verb) == target) {
-          return 100 * noun + verb;
+          return UPPER_BOUND * noun + verb;
         }
       }
     }
