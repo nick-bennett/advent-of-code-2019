@@ -3,7 +3,7 @@
 | Day | Input data | Completed | Languages |
 |:---:|:----------:|:---------:|:---------:|
 | [1](https://adventofcode.com/2019/day/1) | [`input.txt`](data/day1/input.txt) | :star2: | [Java](src/com/nickbenn/day1/JavaMain.java), [Kotlin](src/com/nickbenn/day1/KotlinMain.kt) |
-| [2](https://adventofcode.com/2019/day/2) | [`input.txt`](data/day2/input.txt) | :star2: | [Java](src/com/nickbenn/day2/JavaMain.java), [Kotlin](src/com/nickbenn/day2/KotlinMain.java) |
+| [2](https://adventofcode.com/2019/day/2) | [`input.txt`](data/day2/input.txt) | :star2: | [Java](src/com/nickbenn/day2/JavaMain.java), [Kotlin](src/com/nickbenn/day2/KotlinMain.kt) |
 | _3_ |  |  |  |
 | _4_ |  |  |  |
 | _5_ |  |  |  |
