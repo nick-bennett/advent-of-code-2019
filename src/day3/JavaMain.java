@@ -38,7 +38,7 @@ public class JavaMain {
   private static final String FORMAT_1 =
       "Part 1: Minimum Manhattan distance from origin to intersection is %,d.%n";
   private static final String FORMAT_2 =
-      "Part 2: Minimum combined travel distance from origin tointersection is %,d.%n";
+      "Part 2: Minimum combined travel distance from origin to intersection is %,d.%n";
 
   public static void main(String[] args) throws URISyntaxException, IOException {
     Path path = Path.of(JavaMain.class.getResource(INPUT_FILE).toURI());
