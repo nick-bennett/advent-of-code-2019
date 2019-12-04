@@ -55,9 +55,10 @@ public class JavaMain {
     }
   }
 
-  private static int process(List<Wire> wires, ToIntFunction<Cell> function) {
+  private static int process(List<Wire> wires, ToIntFunction<Cell> metric) {
     Map<Cell, Cell> traces = new HashMap<>();
     Cell best = null;
+    int bestMeasure = Integer.MAX_VALUE;
     for (Wire wire : wires) {
       int row = 0;
       int column = 0;
@@ -76,14 +77,16 @@ public class JavaMain {
             traces.put(cell, cell);
           } else if (previous.getWire() != wire) {
             Cell augmented = new Cell(wire, row, column, travel + previous.getTravel());
-            if (best == null || function.applyAsInt(best) > function.applyAsInt(augmented)) {
+            int testMeasure = metric.applyAsInt(augmented);
+            if (best == null || bestMeasure > testMeasure) {
               best = augmented;
+              bestMeasure = testMeasure;
             }
           }
         }
       }
     }
-    return function.applyAsInt(best);
+    return bestMeasure;
   }
 
   private enum Direction {
@@ -163,7 +166,7 @@ public class JavaMain {
     private final List<Leg> legs;
 
     private Wire(List<Leg> legs) {
-      this.legs = Collections.unmodifiableList(legs);
+      this.legs = legs;
     }
 
     public static Wire parse(String input) {
