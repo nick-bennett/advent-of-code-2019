@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +42,8 @@ public class JavaMain {
   public static void main(String[] args) throws URISyntaxException, IOException {
     Path path = Path.of(JavaMain.class.getResource(INPUT_FILE).toURI());
     List<Wire> wires = parse(path);
-    System.out.printf(FORMAT_1, process(wires, Cell::getManhattan));
-    System.out.printf(FORMAT_2, process(wires, Cell::getTravel));
+    System.out.printf(FORMAT_1, process(wires, (cell) -> cell.manhattan));
+    System.out.printf(FORMAT_2, process(wires, (cell) -> cell.travel));
   }
 
   public static List<Wire> parse(Path path) throws IOException {
@@ -63,20 +62,19 @@ public class JavaMain {
       int row = 0;
       int column = 0;
       int travel = 0;
-      for (Leg leg : wire.getLegs()) {
-        Direction direction = leg.getDirection();
-        int length = leg.getLength();
-        int rowOffset = direction.getRowOffset();
-        int columnOffset = direction.getColumnOffset();
-        for (int step = 0; step < length; step++) {
+      for (Leg leg : wire.legs) {
+        Direction direction = leg.direction;
+        int rowOffset = direction.rowOffset;
+        int columnOffset = direction.columnOffset;
+        for (int step = 0; step < leg.length; step++) {
           row += rowOffset;
           column += columnOffset;
           Cell cell = new Cell(wire, row, column, ++travel);
           Cell previous = traces.get(cell);
           if (previous == null) {
             traces.put(cell, cell);
-          } else if (previous.getWire() != wire) {
-            Cell augmented = new Cell(wire, row, column, travel + previous.getTravel());
+          } else if (previous.wire != wire) {
+            Cell augmented = new Cell(wire, row, column, travel + previous.travel);
             int testMeasure = metric.applyAsInt(augmented);
             if (best == null || bestMeasure > testMeasure) {
               best = augmented;
@@ -96,8 +94,8 @@ public class JavaMain {
     DOWN(1, 0),
     LEFT(0, -1);
 
-    private final int rowOffset;
-    private final int columnOffset;
+    public final int rowOffset;
+    public final int columnOffset;
 
     Direction(int rowOffset, int columnOffset) {
       this.rowOffset = rowOffset;
@@ -118,20 +116,12 @@ public class JavaMain {
       return null;
     }
 
-    public int getRowOffset() {
-      return rowOffset;
-    }
-
-    public int getColumnOffset() {
-      return columnOffset;
-    }
-
   }
 
   private static final class Leg {
 
-    private final Direction direction;
-    private final int length;
+    public final Direction direction;
+    public final int length;
     private final String str;
 
     private Leg(Direction direction, int length) {
@@ -146,14 +136,6 @@ public class JavaMain {
       return new Leg(direction, length);
     }
 
-    public Direction getDirection() {
-      return direction;
-    }
-
-    public int getLength() {
-      return length;
-    }
-
     @Override
     public String toString() {
       return str;
@@ -163,7 +145,7 @@ public class JavaMain {
 
   private static final class Wire {
 
-    private final List<Leg> legs;
+    public final List<Leg> legs;
 
     private Wire(List<Leg> legs) {
       this.legs = legs;
@@ -172,22 +154,18 @@ public class JavaMain {
     public static Wire parse(String input) {
       return new Wire(DELIMITER.splitAsStream(input)
           .map(Leg::parse)
-          .collect(Collectors.toList()));
-    }
-
-    public List<Leg> getLegs() {
-      return legs;
+          .collect(Collectors.toUnmodifiableList()));
     }
 
   }
 
   private static final class Cell {
 
-    private final Wire wire;
-    private final int row;
-    private final int column;
-    private final int travel;
-    private final int manhattan;
+    public final Wire wire;
+    public final int row;
+    public final int column;
+    public final int travel;
+    public final int manhattan;
     private final int hash;
     private final String str;
 
@@ -199,26 +177,6 @@ public class JavaMain {
       this.manhattan = Math.abs(row) + Math.abs(column);
       hash = Objects.hash(row, column);
       str = String.format(CELL_FORMAT, getClass().getSimpleName(), row, column);
-    }
-
-    public Wire getWire() {
-      return wire;
-    }
-
-    public int getRow() {
-      return row;
-    }
-
-    public int getColumn() {
-      return column;
-    }
-
-    public int getTravel() {
-      return travel;
-    }
-
-    public int getManhattan() {
-      return manhattan;
     }
 
     @Override

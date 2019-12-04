@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2019 Nicholas Bennett
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package day3
 
 import java.io.File
@@ -44,10 +59,9 @@ object KotlinMain {
             var travel = 0
             for (leg in wire.legs) {
                 val direction = leg.direction
-                val length = leg.length
                 val rowOffset = direction.rowOffset
                 val columnOffset = direction.columnOffset
-                for (step in 0 until length) {
+                repeat(leg.length) {
                     row += rowOffset
                     column += columnOffset
                     val cell = Cell(wire, row, column, ++travel)
@@ -55,11 +69,14 @@ object KotlinMain {
                     if (previous == null) {
                         traces[cell] = cell
                     } else if (previous.wire != wire) {
+                        if (metric(cell) < metric(previous)) {
+                            traces[cell] = cell // Not required; extends approach to 3+ wires.
+                        }
                         val augmented = Cell(wire, row, column, travel + previous.travel)
-                        val test = metric(augmented)
-                        if (best == null || bestMeasure > test) {
+                        val testMeasure = metric(augmented)
+                        if (best == null || testMeasure < bestMeasure) {
                             best = augmented
-                            bestMeasure = test
+                            bestMeasure = testMeasure
                         }
                     }
                 }
@@ -114,9 +131,7 @@ object KotlinMain {
 
     }
 
-    private class Wire private constructor(_legs: List<Leg>) {
-
-        val legs: List<Leg> = _legs
+    private class Wire private constructor(val legs: List<Leg>) {
 
         companion object {
 
