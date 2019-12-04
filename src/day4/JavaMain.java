@@ -28,32 +28,32 @@ public class JavaMain {
   private static final String HEADER =
       "Potential code values between %d and %d, with non-descending digits, and with ...%n";
   private static final String FORMAT_1 =
-      "(Part 1) ... at least 1 run of 2+ repeating digits = %d.%n";
+      "(Part 1) ... at least 1 run of at least 2 repeating digits = %d.%n";
   private static final String FORMAT_2 =
       "(Part 2) ... at least 1 run of exactly 2 repeating digits = %d.%n";
 
   public static void main(String[] args) {
     System.out.printf(HEADER, MIN_VALUE, MAX_VALUE);
-    System.out.printf(FORMAT_1, countValid(MIN_VALUE, MAX_VALUE, (entry) -> entry.getValue() >= 2));
-    System.out.printf(FORMAT_2, countValid(MIN_VALUE, MAX_VALUE, (entry) -> entry.getValue() == 2));
+    List<Integer> candidates = generate(0, MIN_VALUE, MAX_VALUE);
+    System.out.printf(FORMAT_1, filterAndCount(candidates, (entry) -> entry.getValue().size() >= 2));
+    System.out.printf(FORMAT_2, filterAndCount(candidates, (entry) -> entry.getValue().size() == 2));
   }
 
-  private static int countValid(int minimum, int maximum,
-      Predicate<Map.Entry<Integer, Integer>> predicate) {
-    return (int) build(0, minimum, maximum).parallelStream()
-        .map((value) ->
+  private static long filterAndCount(List<Integer> rawCandidates,
+      Predicate<Map.Entry<Integer, List<Integer>>> predicate) {
+    return rawCandidates.parallelStream()
+        .filter(value ->
             value.toString().codePoints()
                 .boxed()
-                .collect(Collectors.toMap(d -> d, d -> 1, Integer::sum))
+                .collect(Collectors.groupingBy(d -> d))
                 .entrySet()
                 .stream()
                 .anyMatch(predicate)
         )
-        .filter(b -> b)
         .count();
   }
 
-  private static List<Integer> build(int seed, int minimum, int maximum) {
+  private static List<Integer> generate(int seed, int minimum, int maximum) {
     List<Integer> candidates = new LinkedList<>();
     int lastDigit = (seed > 0) ? seed % 10 : 1;
     int newSeed = seed * 10;
@@ -63,7 +63,7 @@ public class JavaMain {
           if (i >= minimum) {
             candidates.add(i);
           }
-          candidates.addAll(build(i, minimum, maximum));
+          candidates.addAll(generate(i, minimum, maximum));
         }
       }
     }

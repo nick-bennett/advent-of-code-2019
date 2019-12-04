@@ -22,34 +22,34 @@ object KotlinMain {
     private const val HEADER =
         "Potential code values between %d and %d, with non-descending digits, and with ...%n"
     private const val FORMAT_1 =
-        "(Part 1) ... at least 1 run of 2+ repeating digits = %d.%n"
+        "(Part 1) ... at least 1 run of at least 2 repeating digits = %d.%n"
     private const val FORMAT_2 =
         "(Part 2) ... at least 1 run of exactly 2 repeating digits = %d.%n"
 
     @JvmStatic
     fun main(vararg args: String) {
         print(HEADER.format(MIN_VALUE, MAX_VALUE))
-        print(FORMAT_1.format(countValid(MIN_VALUE, MAX_VALUE) { entry -> entry.value.size >= 2}))
-        print(FORMAT_2.format(countValid(MIN_VALUE, MAX_VALUE) { entry -> entry.value.size == 2}))
+        with(generate(0, MIN_VALUE, MAX_VALUE)) {
+            print(FORMAT_1.format(filterAndCount(this) { entry -> entry.value.size >= 2 }))
+            print(FORMAT_2.format(filterAndCount(this) { entry -> entry.value.size == 2 }))
+        }
     }
 
-    private fun countValid(
-        minimum: Int,
-        maximum: Int,
+    private fun filterAndCount(
+        rawCandidates: List<Int>,
         predicate: (Map.Entry<Char, List<Char>>) -> Boolean
     ): Int {
-        return build(0, minimum, maximum).asSequence()
-            .map { value: Int ->
+        return rawCandidates
+            .filter { value ->
                 value.toString().asSequence()
                     .groupBy { d -> d }
-                    .asSequence()
-                    .any(predicate)
+                    .filter(predicate)
+                    .any()
             }
-            .filter { b -> b }
-            .count().toInt()
+            .count()
     }
 
-    private fun build(
+    private fun generate(
         seed: Int,
         minimum: Int,
         maximum: Int
@@ -63,7 +63,7 @@ object KotlinMain {
                     if (i >= minimum) {
                         candidates.add(i)
                     }
-                    candidates.addAll(build(i, minimum, maximum))
+                    candidates.addAll(generate(i, minimum, maximum))
                 }
             }
         }
