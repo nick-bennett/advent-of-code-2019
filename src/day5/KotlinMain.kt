@@ -54,7 +54,7 @@ object KotlinMain {
         fun consume(length: Int, quotient: Int, store: Boolean): IntArray {
             val operands = instructions.copyOfRange(ip, ip + length)
             ip += length
-            var q = quotient;
+            var q = quotient
             for (i in 0 until (length - if (store) 1 else 0)) {
                 if (q % 10 == 0) {
                     operands[i] = instructions[operands[i]]
