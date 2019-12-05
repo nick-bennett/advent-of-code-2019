@@ -6,7 +6,7 @@
 | [2](https://adventofcode.com/2019/day/2) | :star2: | [Java](src/day2/JavaMain.java), [Kotlin](src/day2/KotlinMain.kt) | [`input.txt`](data/day2/input.txt) |
 | [3](https://adventofcode.com/2019/day/3) | :star2: | [Java](src/day3/JavaMain.java), [Kotlin](src/day3/KotlinMain.kt) | [`input.txt`](data/day3/input.txt) |
 | [4](https://adventofcode.com/2019/day/4) | :star2: | [Java](src/day4/JavaMain.java), [Kotlin](src/day4/KotlinMain.kt) | |
-| [5](https://adventofcode.com/2019/day/5) | :star2: | [Java](src/day5/JavaMain.java) <!-- , [Kotlin](src/day5/KotlinMain.kt) --> | [`input.txt`](data/day5/input.txt) |
+| [5](https://adventofcode.com/2019/day/5) | :star2: | [Java](src/day5/JavaMain.java), [Kotlin](src/day5/KotlinMain.kt) | [`input.txt`](data/day5/input.txt) |
 
 <!--
 | [6](https://adventofcode.com/2019/day/6) | :star2: | [Java](src/day6/JavaMain.java), [Kotlin](src/day6/KotlinMain.kt) | [`input.txt`](data/day6/input.txt) |
