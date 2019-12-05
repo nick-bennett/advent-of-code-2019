@@ -35,19 +35,11 @@ public class JavaMain {
 
   public static void main(String[] args) throws URISyntaxException, IOException {
     Path path = Path.of(JavaMain.class.getResource(INPUT_FILE).toURI());
-    int[] instructions = new int[] {3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,
-        1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,
-        999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99};
-//    int[] instructions = parse(path);
-    try {
-      System.out.printf(OUTPUT_FORMAT, 1, 1, process(instructions, 7));
-    } catch (Exception e) {
-      System.out.println(Arrays.toString(instructions));
-    }
-//    System.out.printf(
-//        OUTPUT_FORMAT, 1, 1, process(Arrays.copyOf(instructions, instructions.length), 1));
-//    System.out.printf(
-//        OUTPUT_FORMAT, 2, 5, process(Arrays.copyOf(instructions, instructions.length), 5));
+    int[] instructions = parse(path);
+    System.out.printf(
+        OUTPUT_FORMAT, 1, 1, process(Arrays.copyOf(instructions, instructions.length), 1));
+    System.out.printf(
+        OUTPUT_FORMAT, 2, 5, process(Arrays.copyOf(instructions, instructions.length), 5));
   }
 
   public static int[] parse(Path path) throws IOException {
@@ -65,25 +57,25 @@ public class JavaMain {
     while (true) {
       int operation = instructions[ip++];
       int[] operands;
-      System.out.println(operation);
+      int quotient = operation / 100;
       switch (operation % 100) {
         case 1:
-          operands = consume(instructions, ip, 3, operation / 100, true);
+          operands = consume(instructions, ip, 3, quotient, true);
           instructions[operands[2]] = operands[0] + operands[1];
           ip += 3;
           break;
         case 2:
-          operands = consume(instructions, ip, 3, operation / 100, true);
+          operands = consume(instructions, ip, 3, quotient, true);
           instructions[operands[2]] = operands[0] * operands[1];
           ip += 3;
           break;
         case 3:
-          operands = consume(instructions, ip, 1, 0, true);
+          operands = consume(instructions, ip, 1, quotient, true);
           instructions[operands[0]] = input;
           ip += 1;
           break;
         case 4:
-          operands = consume(instructions, ip, 1, 0, false);
+          operands = consume(instructions, ip, 1, quotient, false);
           if (result != 0) {
             throw new IllegalArgumentException();
           }
@@ -91,7 +83,7 @@ public class JavaMain {
           ip += 1;
           break;
         case 5:
-          operands = consume(instructions, ip, 2, operation / 100, false);
+          operands = consume(instructions, ip, 2, quotient, false);
           if (operands[0] != 0) {
             ip = operands[1];
           } else {
@@ -99,7 +91,7 @@ public class JavaMain {
           }
           break;
         case 6:
-          operands = consume(instructions, ip, 2, operation / 100, false);
+          operands = consume(instructions, ip, 2, quotient, false);
           if (operands[0] == 0) {
             ip = operands[1];
           } else {
@@ -107,12 +99,12 @@ public class JavaMain {
           }
           break;
         case 7:
-          operands = consume(instructions, ip, 3, operation / 100, true);
+          operands = consume(instructions, ip, 3, quotient, true);
           instructions[operands[2]] = (operands[0] < operands[1]) ? 1 : 0;
           ip += 3;
           break;
         case 8:
-          operands = consume(instructions, ip, 3, operation / 100, true);
+          operands = consume(instructions, ip, 3, quotient, true);
           instructions[operands[2]] = (operands[0] == operands[1]) ? 1 : 0;
           ip += 3;
           break;

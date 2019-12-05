@@ -21,6 +21,7 @@ object KotlinMain {
 
     private const val INPUT_FILE = "input.txt"
     private const val DELIMITER = "\\s*,\\s*"
+    private const val OUTPUT_FORMAT = "Part %d: For input = %d, diagnostic output = %d.%n"
 
     private val delimiterRegex = Regex(DELIMITER)
 
@@ -28,7 +29,8 @@ object KotlinMain {
     fun main(args: Array<String>) {
         javaClass.getResource(INPUT_FILE)?.toURI()?.let { uri ->
             with(parse(File(uri))) {
-                print(process(this, 5))
+                print(OUTPUT_FORMAT.format(1, 1, process(this.clone(), 1)))
+                print(OUTPUT_FORMAT.format(2, 5, process(this.clone(), 5)))
             }
         }
     }
@@ -49,36 +51,37 @@ object KotlinMain {
         var result = 0
         var ip = 0
 
-        fun consume(length: Int, opModes: Int): IntArray {
+        fun consume(length: Int, quotient: Int, store: Boolean): IntArray {
             val operands = instructions.copyOfRange(ip, ip + length)
             ip += length
-            var quotient = opModes;
-            for (i in 0 until length) {
-                if (quotient % 10 == 0) {
+            var q = quotient;
+            for (i in 0 until (length - if (store) 1 else 0)) {
+                if (q % 10 == 0) {
                     operands[i] = instructions[operands[i]]
                 }
-                quotient /= 10
+                q /= 10
             }
             return operands
         }
 
         while (true) {
             val operation = instructions[ip++]
+            val quotient = operation / 100
             when (operation % 100) {
                 1 -> {
-                    val operands = consume(3, (operation / 100) % 100)
+                    val operands = consume(3, quotient, true)
                     instructions[operands[2]] = operands[0] + operands[1]
                 }
                 2 -> {
-                    val operands = consume(3, (operation / 100) % 100)
+                    val operands = consume(3, quotient, true)
                     instructions[operands[2]] = operands[0] * operands[1]
                 }
                 3 -> {
-                    val operands = consume(1, 0)
+                    val operands = consume(1, quotient, true)
                     instructions[operands[0]] = input
                 }
                 4 -> {
-                    val operands = consume(1, (operation / 100) % 10)
+                    val operands = consume(1, quotient, false)
                     result = if (result != 0) {
                         throw IllegalArgumentException()
                     } else {
@@ -86,23 +89,23 @@ object KotlinMain {
                     }
                 }
                 5 -> {
-                    val operands = consume(2, operation / 100)
+                    val operands = consume(2, quotient, false)
                     if (operands[0] != 0) {
                         ip = operands[1]
                     }
                 }
                 6 -> {
-                    val operands = consume(2, operation / 100)
+                    val operands = consume(2, quotient, false)
                     if (operands[0] == 0) {
                         ip = operands[1]
                     }
                 }
                 7 -> {
-                    val operands = consume(3, (operation / 100) % 100)
+                    val operands = consume(3, quotient, true)
                     instructions[operands[2]] = if (operands[0] < operands[1]) 1 else 0
                 }
                 8 -> {
-                    val operands = consume(3, (operation / 100) % 100)
+                    val operands = consume(3, quotient, true)
                     instructions[operands[2]] = if (operands[0] == operands[1]) 1 else 0
                 }
                 99 -> return result
