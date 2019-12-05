@@ -35,11 +35,19 @@ public class JavaMain {
 
   public static void main(String[] args) throws URISyntaxException, IOException {
     Path path = Path.of(JavaMain.class.getResource(INPUT_FILE).toURI());
-    int[] instructions = parse(path);
-    System.out.printf(
-        OUTPUT_FORMAT, 1, 1, process(Arrays.copyOf(instructions, instructions.length), 1));
-    System.out.printf(
-        OUTPUT_FORMAT, 2, 5, process(Arrays.copyOf(instructions, instructions.length), 5));
+    int[] instructions = new int[] {3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,
+        1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,
+        999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99};
+//    int[] instructions = parse(path);
+    try {
+      System.out.printf(OUTPUT_FORMAT, 1, 1, process(instructions, 7));
+    } catch (Exception e) {
+      System.out.println(Arrays.toString(instructions));
+    }
+//    System.out.printf(
+//        OUTPUT_FORMAT, 1, 1, process(Arrays.copyOf(instructions, instructions.length), 1));
+//    System.out.printf(
+//        OUTPUT_FORMAT, 2, 5, process(Arrays.copyOf(instructions, instructions.length), 5));
   }
 
   public static int[] parse(Path path) throws IOException {
@@ -56,45 +64,34 @@ public class JavaMain {
     int ip = 0;
     while (true) {
       int operation = instructions[ip++];
-      int opcode = operation % 100;
-      operation = operation / 100;
-      int[] modes;
       int[] operands;
-      switch (opcode) {
+      System.out.println(operation);
+      switch (operation % 100) {
         case 1:
-          operands = consume(instructions, ip, 3);
-          modes = modes(operation, 2);
-          preprocess(operands, modes,instructions);
+          operands = consume(instructions, ip, 3, operation / 100, true);
           instructions[operands[2]] = operands[0] + operands[1];
           ip += 3;
           break;
         case 2:
-          operands = consume(instructions, ip, 3);
-          modes = modes(operation, 2);
-          preprocess(operands, modes,instructions);
+          operands = consume(instructions, ip, 3, operation / 100, true);
           instructions[operands[2]] = operands[0] * operands[1];
           ip += 3;
           break;
         case 3:
-          operands = consume(instructions, ip, 1);
+          operands = consume(instructions, ip, 1, 0, true);
           instructions[operands[0]] = input;
           ip += 1;
           break;
         case 4:
-          operands = consume(instructions, ip, 1);
-          modes = modes(operation, 1);
-          preprocess(operands, modes,instructions);
+          operands = consume(instructions, ip, 1, 0, false);
           if (result != 0) {
             throw new IllegalArgumentException();
-          } else {
-            result = operands[0];
           }
+          result = operands[0];
           ip += 1;
           break;
         case 5:
-          operands = consume(instructions, ip, 2);
-          modes = modes(operation, 2);
-          preprocess(operands, modes,instructions);
+          operands = consume(instructions, ip, 2, operation / 100, false);
           if (operands[0] != 0) {
             ip = operands[1];
           } else {
@@ -102,9 +99,7 @@ public class JavaMain {
           }
           break;
         case 6:
-          operands = consume(instructions, ip, 2);
-          modes = modes(operation, 2);
-          preprocess(operands, modes,instructions);
+          operands = consume(instructions, ip, 2, operation / 100, false);
           if (operands[0] == 0) {
             ip = operands[1];
           } else {
@@ -112,16 +107,12 @@ public class JavaMain {
           }
           break;
         case 7:
-          operands = consume(instructions, ip, 3);
-          modes = modes(operation, 2);
-          preprocess(operands, modes,instructions);
+          operands = consume(instructions, ip, 3, operation / 100, true);
           instructions[operands[2]] = (operands[0] < operands[1]) ? 1 : 0;
           ip += 3;
           break;
         case 8:
-          operands = consume(instructions, ip, 3);
-          modes = modes(operation, 2);
-          preprocess(operands, modes,instructions);
+          operands = consume(instructions, ip, 3, operation / 100, true);
           instructions[operands[2]] = (operands[0] == operands[1]) ? 1 : 0;
           ip += 3;
           break;
@@ -131,25 +122,15 @@ public class JavaMain {
     }
   }
 
-  private static int[] modes(int operation, int length) {
-    int[] modes = new int[length];
-    for (int i = 0; i < modes.length; i++) {
-      modes[i] = operation % 10;
-      operation /= 10;
-    }
-    return modes;
-  }
-
-  private static int[] consume(int[] instructions, int ip, int length) {
-    return Arrays.copyOfRange(instructions, ip, ip + length);
-  }
-
-  private static void preprocess(int[] operands, int[] modes, int[] instructions) {
-    for (int i = 0; i < modes.length; i++) {
-      if (modes[i] == 0) {
+  private static int[] consume(int[] instructions, int ip, int length, int quotient, boolean store) {
+    int[] operands =  Arrays.copyOfRange(instructions, ip, ip + length);
+    for (int i = 0; i < length - (store ? 1 : 0); i++) {
+      if (quotient % 10 == 0) {
         operands[i] = instructions[operands[i]];
       }
+      quotient /= 10;
     }
+    return operands;
   }
 
 }
