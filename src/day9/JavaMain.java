@@ -30,13 +30,16 @@ public class JavaMain {
 
   private static final String INPUT_FILE = "input.txt";
   private static final Pattern DELIMITER = Pattern.compile("\\s*,\\s*");
+  private static final String FORMAT_1 = "Part 1: BOOST keycode = %d.%n";
+  private static final String FORMAT_2 = "Part 2: Distress signal coordinates = %d.%n";
 
   public static void main(String[] args) throws URISyntaxException, IOException {
     Path path = Path.of(JavaMain.class.getResource(INPUT_FILE).toURI());
     long[] instructions = parse(path);
-//    long[] instructions = {109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99};
-    instructions = Arrays.copyOf(instructions, instructions.length * 100);
-    System.out.println(process(instructions, new LinkedList<Long>(List.of(1L))));
+    System.out.printf(FORMAT_1, process(Arrays.copyOf(instructions, instructions.length + 1000),
+        new LinkedList<Long>(List.of(1L))).get(0));
+    System.out.printf(FORMAT_2, process(Arrays.copyOf(instructions, instructions.length + 1000),
+        new LinkedList<Long>(List.of(2L))).get(0));
   }
 
   public static long[] parse(Path path) throws IOException {
@@ -117,15 +120,16 @@ public class JavaMain {
   private static long[] consume(long[] instructions, int ip, int relativeBase,
       int length, int quotient, boolean store) {
     long[] operands =  Arrays.copyOfRange(instructions, ip, ip + length);
-    for (int i = 0; i < length - (store ? 1 : 0); i++) {
+    for (int i = 0; i < length; i++) {
       int mode = quotient % 10;
-      switch (mode) {
-        case 0:
-          operands[i] = instructions[(int) operands[i]];
-          break;
-        case 2:
+      if (mode == 0 && (i < length - 1 || !store)) {
+        operands[i] = instructions[(int) operands[i]];
+      } else if (mode == 2) {
+        if (i < length - 1 || !store) {
+          operands[i] = instructions[(int) (operands[i] + relativeBase)];
+        } else {
           operands[i] += relativeBase;
-          break;
+        }
       }
       quotient /= 10;
     }
