@@ -42,7 +42,7 @@ public class JavaMain {
         new LinkedList<Long>(List.of(2L))).get(0));
   }
 
-  public static long[] parse(Path path) throws IOException {
+  private static long[] parse(Path path) throws IOException {
     try (Stream<String> stream = Files.lines(path)) {
       return stream
           .flatMap(DELIMITER::splitAsStream)
