@@ -21,16 +21,19 @@ import java.util.stream.Stream;
 public class JavaMain {
 
   private static final String INPUT_FILE = "input.txt";
+  private static final int WAGER_DEMOLITION_POSITION = 200;
   private static final String MAX_UNOBSTRUCTED_ASTEROIDS = "Part 1: The maximum number of "
       + "asteroids with unobstructed visibility from the selected monitoring station is %d.%n";
-  protected static final String DEMOLITION_SEQUENCE_ITEM =
+  private static final String DEMOLITION_SEQUENCE_ITEM =
       "Part 2: The %dth asteroid in the clockwise demolition sequence is at %s.%n";
+
 
   public static void main(String[] args) throws URISyntaxException, IOException {
     AsteroidBelt belt = AsteroidBelt.from(INPUT_FILE);
     belt.selectStation();
     System.out.printf(MAX_UNOBSTRUCTED_ASTEROIDS, belt.getVisible().size());
-    System.out.printf(DEMOLITION_SEQUENCE_ITEM, 200, belt.demolitionSequence().get(199));
+    System.out.printf(DEMOLITION_SEQUENCE_ITEM,
+        WAGER_DEMOLITION_POSITION, belt.demolitionSequence().get(WAGER_DEMOLITION_POSITION - 1));
   }
 
   private static class AsteroidBelt {
